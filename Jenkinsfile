@@ -62,10 +62,11 @@ pipeline {
                 docker run -d --name website-demo -p 80:80 ${LATEST_URI}
                 "
             """
-        }
+                }
+            }
+        }  
     }
-}  
-  
+}
     post {  
         success {  
             echo 'Website deployed successfully'  
