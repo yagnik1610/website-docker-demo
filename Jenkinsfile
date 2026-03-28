@@ -54,13 +54,13 @@ pipeline {
             steps {  
                 sshagent(['deploy-ec2-key']) {  
                     sh """  
-                        ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_SERVER} "
+                        ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_SERVER} '
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com &&
                         docker pull ${LATEST_URI} &&
                         docker stop website-demo || true &&
                         docker rm website-demo || true &&
                         docker run -d --name website-demo -p 80:80 ${LATEST_URI}
-                        "
+                        '
                     """  
                 }  
             }  
