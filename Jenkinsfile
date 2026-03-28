@@ -54,9 +54,15 @@ pipeline {
         stage('Deploy to EC2') {  
             steps {  
                 sshagent(['deploy-ec2-key']) {  
-                    sh """  
-                        ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_SERVER} "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com && docker pull ${LATEST_URI} && docker stop website-demo || true && docker rm website-demo || true && docker run -d --name website-demo -p 80:80 ${LATEST_URI}"
-                    """  
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_SERVER} '
+                    aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com &&
+                    docker pull ${LATEST_URI} &&
+                    docker stop website-demo || true &&
+                    docker rm website-demo || true &&
+                    docker run -d --name website-demo -p 80:80 ${LATEST_URI}
+                    '
+                    """
                 }  
             }  
         }  
@@ -65,10 +71,10 @@ pipeline {
 
     post {  
         success {  
-            echo 'Website deployed successfully 🚀'  
+            echo '🎉 Website deployed successfully!'  
         }  
         failure {  
-            echo 'Pipeline failed ❌'  
+            echo '❌ Pipeline failed. Check logs.'  
         }  
     }  
 }
